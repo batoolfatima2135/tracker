@@ -13,6 +13,7 @@ export const mainConfig: Configuration = {
   module: {
     rules,
   },
+  externals: ['electron', 'uiohook-napi'],
   plugins,
   resolve: {
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
