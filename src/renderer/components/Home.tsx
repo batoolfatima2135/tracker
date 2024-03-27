@@ -36,7 +36,7 @@ const Home: React.FC = () => {
   useEffect(() => {
     const intervalId = setInterval(() => {
       window.ipc.captureScreenshot();
-    }, 5000);
+    }, 30000);
 
     return () => {
       clearInterval(intervalId);
@@ -63,9 +63,12 @@ const Home: React.FC = () => {
   return (
     <div>
       <div className='flex justify-center my-10 flex-col'>
+        <h1 className='text-white text-center text-4xl font-extrabold'>
+          TRACKER APP
+        </h1>
         <div className='flex justify-center my-10 flex-col border-2 rounded-md p-5'>
           <h1 className='font-bold text-2xl font-poppins text-center text-white'>
-            It also monitors your active time! ⌛
+            It monitors your active time! ⌛
           </h1>
           <p className='text-center text-base my-2 text-white'>
             Click on "Start Monitoring" to track your active time on your PC! 🕓
@@ -83,22 +86,34 @@ const Home: React.FC = () => {
           </div>
         </div>
         <h1 className='font-bold text-2xl font-poppins text-center text-white mb-4'>
-          It takes screenshots of your desktop every 5 seconds! 🖥️📸
+          It takes screenshots of your desktop every 30 seconds! 🖥️📸
         </h1>
-        <div className='grid grid-cols-6 gap-2'>
+        <div className='grid grid-cols-3 gap-4'>
           {/* Render screenshots */}
           {screenshotData.map((data, index) => (
-            <div>
-              <p>Time: {data.time}</p>
+            <div className='text-white border border-white p-2 rounded-md'>
+              <div className='flex justify-between  my-2'>
+                <p className='font-bold'>Time:</p>
+                <p>{data.time}</p>
+              </div>
               <figure key={index}>
                 <img
                   src={data.dataURL}
                   alt={`Screenshot ${index}`}
+                  className='w-full border border-white rounded-sm'
                 />
-                <figcaption>{data.activeWin}</figcaption>
+                <figcaption className='font-semi-bold text-center'>
+                  {data.activeWin}
+                </figcaption>
               </figure>
-              <p>mouse clickes : {data.mouseClicks}</p>
-              <p>key presses : {data.keypressCount}</p>
+              <div className='flex justify-between  my-2'>
+                <p className='font-semibold'>Mouse clicks:</p>
+                <p>{data.mouseClicks}</p>
+              </div>
+              <div className='flex justify-between'>
+                <p className='font-semibold'>Key presses:</p>
+                <p>{data.keypressCount}</p>
+              </div>
             </div>
           ))}
         </div>

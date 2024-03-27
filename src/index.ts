@@ -4,9 +4,20 @@ import {
   desktopCapturer,
   ipcMain,
   powerMonitor,
+  Notification,
+  net
 } from "electron";
 
+
 import { uIOhook } from 'uiohook-napi'
+
+const internetConnection = net.isOnline();
+if(!internetConnection) {
+  new Notification({
+    title: "Internet connection",
+    body: "Your internet connection is disconnected"
+  }).show() 
+}
 
 
 
@@ -16,6 +27,7 @@ import { uIOhook } from 'uiohook-napi'
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 import ActiveWindow from "@paymoapp/active-window";
+import moment from "moment";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
@@ -28,7 +40,7 @@ let monitoringStarted = false;
 let interval: number | NodeJS.Timeout;
 let lockInterval: number | NodeJS.Timeout;
 let keypressCount = 0;
-let mouseClicks = 0;
+let mouseClicks= 0;
 
 const createWindow = (): void => {
   // Create the browser window.
@@ -39,21 +51,22 @@ const createWindow = (): void => {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
   });
+  uIOhook.on('keydown', (e) => {
+    keypressCount++
+  });
+    uIOhook.on('click', (e) => {
+      mouseClicks++
+  });
+    uIOhook.start()
 
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+
 
   // taking screenshot
   ipcMain.on("take-screenshot", () => {
-    const time = Date.now();
-    uIOhook.on('keydown', (e) => {
-      keypressCount++});
-      uIOhook.on('click', (e) => {
-        mouseClicks++});
-      uIOhook.start()
+    const time = moment().format('MMMM Do YYYY, h:mm:ss a')   
     desktopCapturer
       .getSources({
         types: ["screen"],
@@ -78,9 +91,13 @@ const createWindow = (): void => {
           keypressCount: keypressCount,
           mouseClicks: mouseClicks,
         });
-        keypressCount = 0;
-        mouseClicks = 0;
+       keypressCount = 0;
+       mouseClicks = 0;
       });
+      new Notification({
+        title: "Screenshot",
+        body: "Screenshot taken sucessfully"
+      }).show()
   });
 
   ipcMain.on("request-active-time", (event) => {

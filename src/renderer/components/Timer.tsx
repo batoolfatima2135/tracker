@@ -11,12 +11,12 @@ function Timer({ seconds }: { seconds: number }) {
   const formattedSeconds = remainingSeconds.toString().padStart(2, "0");
 
   return (
-    <div className="flex">
-      <p className="w-32">{formattedHours}</p>
-      <p className="-mt-2">:</p>
-      <p className="w-32">{formattedMinutes}</p>
-      <p className="-mt-2">:</p>
-      <p className="w-32">{formattedSeconds}</p>
+    <div className='flex w-full'>
+      <p className='w-32'>{formattedHours}</p>
+      <p className='-mt-2'>:</p>
+      <p className='w-32'>{formattedMinutes}</p>
+      <p className='-mt-2'>:</p>
+      <p className='w-32'>{formattedSeconds}</p>
     </div>
   );
 }
